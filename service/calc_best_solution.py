@@ -33,10 +33,11 @@ def evaluate_mission(target, pilot, aircraft, weather_condition, max_distance, y
     # Calculate normalized distance
     distance = haversine_distance(target['lat'], target['lon'], your_location_lat, your_location_lon)
     distance_score = normalize_distance(distance, max_distance)
-
     aircraft_score = aircraft['speed'] / max(aircraft['fuel_capacity'], 1)
+
     # Pilot skill score
     pilot_skill_score = pilot['skill'] / 10  # Assuming skill is rated out of 10
+
     # Weather condition score
     weather_condition_score = weather_score(weather_condition)
     # Final score calculation without execution_time
@@ -69,7 +70,7 @@ def find_best_missions():
     available_aircrafts = sorted_aircrafts[:]
     available_pilots = sorted_pilots[:]
 
-    for target in targets:
+    for i, target in enumerate(targets):
         if not available_aircrafts or not available_pilots:
             break  # Stop when there are no more aircraft or pilots left
 
@@ -78,8 +79,7 @@ def find_best_missions():
         best_pilot = available_pilots.pop(0)  # Take the best available pilot
 
         # Get the weather info for the target city
-        weather_info = next((item['weather_info'] for item in weather_data if item['city'] == target['city']), {})
-
+        weather_info = weather_data[i]['weather_info']
         # Calculate the mission score
         score = evaluate_mission(
             target,
@@ -105,7 +105,6 @@ def find_best_missions():
         results.append(result)
 
     return results
-
 
 # def find_best_missions():
 #
